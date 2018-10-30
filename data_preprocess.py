@@ -15,35 +15,39 @@ r_positions = requests.get(URL_POSITIONS)
 df_entries = json_normalize(r_entries.json())[['station', 'trafic', 'reseau']]
 df_entries = df_entries[df_entries['reseau']=='Métro']
 df_entries.sort_values('station', inplace = True)
+df_entries= df_entries[df_entries['station'] != 'FUNICULAIRE']              # Useless station
 
 df_positions = json_normalize(r_positions.json())[['nomptar', 'coord.lon', 'coord.lat']]
 df_positions.columns = ['station', 'longitude', 'latitude']
+df_positions.drop_duplicates('station', inplace = True)
+df_positions.replace('L1se Michel', 'Louise Michel', inplace = True)        # Error in RATP database
 
 def findMostSimilar(str,df):
-    """Function that check for the station names from the DataFrame 'df' and returns the most similar to 'str'.
-    Stations from the entries and positions datasets were not uniformly named by RATP, this function handles this problem. """
-    expr = re.split(' |-',str)
+    """Function that checks for the station names from the DataFrame 'df' and returns the most similar to 'str'.
+    Stations from the entries and positions datasets were not uniformly named by RATP, this function handles this problem.
+    It returns nothing if there is no possible match between both DataFrames. """
+    expr = re.split(' |-', str)
     max_similarity = 0
     most_similar_station = ''
     max_index = 0
     for index, row in df.iterrows():
-        regularized_name = unidecode.unidecode(row['station'].lower()).replace('(','').replace(')','')
+        regularized_name = unidecode.unidecode(row['station'].lower())
+        regularized_name = re.sub('\(.*\)', '', regularized_name)
         station_similarity = 0
         for word in expr:
-            if re.match('.*('+word.lower()+').*',regularized_name):
+            if re.match('(^|.* |.*-)(' + word.lower() + ').*', regularized_name):
                 station_similarity += 5
-        if len(expr)!=len(regularized_name.split(' ')):
+        if len(expr) != len(re.split(' |-', regularized_name)):
             station_similarity -= 1
         if station_similarity > max_similarity:
             max_similarity = station_similarity
             most_similar_station = regularized_name
             max_index = index
-    return most_similar_station, max_similarity, max_index
+    return most_similar_station, max_index
 
-for index,row in df_entries.iterrows():
-    station, similarity, index_in_df_positions = findMostSimilar(row['station'], df_positions)
-    df_positions.ix[index_in_df_positions,'station2'] = row['station']
-    df_entries.ix[index,'station2'] = station
-    df_entries.ix[index,'similarity'] = similarity
+for index, row in df_entries.iterrows():
+    station, index_in_df_positions = findMostSimilar(row['station'], df_positions)
+    df_positions.ix[index_in_df_positions, 'station'] = row['station']
 
-df_positions.dropna(inplace = True)
+df_stations = pd.merge(df_positions,df_entries).drop('reseau', axis=1).sort_values('station')
+df_stations.reset_index(drop=True, inplace=True)                            # Final DataFrame
