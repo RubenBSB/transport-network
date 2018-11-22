@@ -12,7 +12,7 @@ URL_POSITIONS = 'https://data.ratp.fr/api/v2/catalog/datasets/accessibilite-des-
 r_entries = requests.get(URL_ENTRIES)
 r_positions = requests.get(URL_POSITIONS)
 
-df_entries = json_normalize(r_entries.json())[['station', 'trafic', 'reseau']]
+df_entries = json_normalize(r_entries.json())[['station', 'traffic', 'reseau']]
 df_entries = df_entries[df_entries['reseau']=='Métro']
 df_entries.sort_values('station', inplace = True)
 df_entries= df_entries[df_entries['station'] != 'FUNICULAIRE']              # Useless station

@@ -73,7 +73,7 @@ def new_dic(n):
     return dic
 
 
-def kruskal(edge_list):
+def get_MST(edge_list):
     """Kruskal algorithm : we add the smallest edge that doesn't create a cycle in the graph while it is possible to do so."""
     global m, dist_matrix
     tree = new_dic(m)
@@ -102,6 +102,4 @@ def kruskal(edge_list):
                 component_list = concat_components(i,j,component_list)
     return tree
 
-sorted_edges = sort_edges(edges)
 
-kruskal_adj_dic = kruskal(sorted_edges)

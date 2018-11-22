@@ -67,23 +67,19 @@ def build_real_network(structure_list):
             adj_matrix[j][i] = adj_matrix[i][j]
     for i in range(m):
         for j in range(m):
-            if real_network_adj_matrix[i][j] == 0.0:
-                real_network_adj_matrix[i][j], real_network_adj_matrix[j][i] = -1.0, -1.0
+            if adj_matrix[i][j] == 0.0:
+                adj_matrix[i][j], adj_matrix[j][i] = -1.0, -1.0
     return adj_matrix
-
-# real_network_adj_matrix = build_real_network(real_network_structure)
 
 def matrix_to_dic(adj_matrix):
     """Transforms the adjacency matrix of a graph into its adjacency dictionary."""
     m = len(adj_matrix)
     adj_dic = {}
     for i in range(m):
-        adj_dic[i] = [[j,df_stations.ix[j,'station'],[adj_matrix[i][j]]] for j in range(m) if adj_matrix[i][j] != -1]
+        adj_dic[i] = [[j,adj_matrix[i][j]] for j in range(m) if adj_matrix[i][j] != -1]
     return(adj_dic)
 
-# real_network_adj_dic = matrix_to_dic(real_network_adj_matrix)
-
-def display_graph(adj_dic):
+def display_graph(adj_dic, plot_title=''):
     """Plot a graph described by its adjacency dictionary 'adj_dic'."""
     global x,y
     plt.figure()
@@ -94,5 +90,7 @@ def display_graph(adj_dic):
     for station_id in adj_dic:
         for connected_station in adj_dic[station_id]:
             j = connected_station[0]
-            plt.plot([x[station_id],x[j]],[y[station_id],y[j]],'g-')
+            plt.plot([x[station_id],x[j]],[y[station_id],y[j]],'g-',linewidth=0.5)
+    plt.title(plot_title)
     plt.show()
+
