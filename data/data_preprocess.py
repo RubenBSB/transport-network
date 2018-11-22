@@ -50,10 +50,6 @@ def find_most_similar(str,df):
             max_index = index
     return most_similar_station, max_index
 
-# for index, row in df_entries.iterrows():
-#     station, index_in_df_positions = find_most_similar(row['station'], df_positions)
-#     df_positions.ix[index_in_df_positions, 'station'] = row['station']
-
 for index, row in df_entries.iterrows():
     station_in_df_positions, index_in_df_positions = find_most_similar(row['station'], df_positions)
     df_positions.ix[index_in_df_positions, 'station'] = station_in_df_positions.upper()
@@ -62,5 +58,3 @@ for index, row in df_entries.iterrows():
 df_stations = pd.merge(df_positions,df_entries).drop('reseau', axis=1).sort_values('station')
 df_stations.reset_index(drop=True, inplace=True)                            # Final DataFrame
 
-# df_stations = pd.merge(df_positions,df_entries).drop('reseau', axis=1).sort_values('station')
-# df_stations.reset_index(drop=True, inplace=True)                            # Final DataFrame
