@@ -79,10 +79,10 @@ def matrix_to_dic(adj_matrix):
         adj_dic[i] = [[j,adj_matrix[i][j]] for j in range(m) if adj_matrix[i][j] != -1]
     return(adj_dic)
 
-def display_graph(adj_dic, plot_title=''):
+def display_graph(adj_dic, plot_title='', figsize=(10,10)):
     """Plot a graph described by its adjacency dictionary 'adj_dic'."""
     global x,y
-    plt.figure()
+    plt.figure(figsize=figsize)
     plt.xlim(2.2, 2.5)
     plt.ylim(48.75, 49.0)
     plt.gca().set_aspect('equal', adjustable='box')
