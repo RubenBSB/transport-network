@@ -14,7 +14,7 @@ for i in range(m):
     for j in range(i):
         dist_ij = sph_distance_coordinate(x[i], y[i], x[j], y[j])
         dist_matrix[i][j] = dist_ij
-        dist_matrix[j][j] = dist_matrix[i][j]
+        dist_matrix[j][i] = dist_matrix[i][j]
         edges.append([i,j,dist_ij])
 
 def sort_edges(edge_list):
