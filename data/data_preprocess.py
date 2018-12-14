@@ -12,9 +12,10 @@ URL_POSITIONS = 'https://data.ratp.fr/api/v2/catalog/datasets/accessibilite-des-
 r_entries = requests.get(URL_ENTRIES)
 r_positions = requests.get(URL_POSITIONS)
 
-df_entries = json_normalize(r_entries.json())[['station', 'traffic', 'reseau']]
+df_entries = json_normalize(r_entries.json())[['station', 'trafic', 'reseau']]
 df_entries = df_entries[df_entries['reseau']=='Métro']
 df_entries.sort_values('station', inplace = True)
+df_entries.columns = ['station', 'traffic', 'reseau']
 df_entries= df_entries[df_entries['station'] != 'FUNICULAIRE']              # Useless station
 
 df_positions = json_normalize(r_positions.json())[['nomptar', 'coord.lon', 'coord.lat']]
@@ -56,4 +57,4 @@ for index, row in df_entries.iterrows():
     df_entries.ix[index, 'station'] = station_in_df_positions.upper()
 
 df_stations = pd.merge(df_positions,df_entries).drop('reseau', axis=1).sort_values('station')
-df_stations.reset_index(drop=True, inplace=True)                            # Final DataFrame
+df_stations.reset_index(drop=True, inplace=True)      # Final DataFrame
