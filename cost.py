@@ -38,17 +38,17 @@ def get_distances(source, graph):
     m = len(graph)
     distances_to_source = np.array(m * [-1.0])
     distances_to_source[source] = 0
-    queue = [[0, source]]
-    already_seen = np.zeros(n, bool)
+    queue = [[source,0]]
+    already_seen = np.zeros(m, bool)
     while queue != []:
-        [dist_source_i, station_i] = heappop(f)
+        [station_i,dist_source_i] = heappop(queue)
         if not already_seen[station_i]:
             already_seen[station_i] = True
-            for [dist_ij, station_j] in graph[station_i]:
-                c = som(dist_source_i, dist_ij)
-                if inf(c, distances_to_source[station_j]):
+            for [station_j,dist_ij] in graph[station_i]:
+                c = dist_sum(dist_source_i, dist_ij)
+                if dist_inf(c, distances_to_source[station_j]):
                     distances_to_source[station_j] = c
-                    heappush(f, [c, station_j])
+                    heappush(queue, [station_j,c])
     return distances_to_source
 
 
@@ -64,7 +64,7 @@ def distance_matrix(graph):
 def average_travelling_time(graph, traffic, V):
     """Computes the average travelling time of 'graph' (in minutes) knowing its traffic distribution and the average velocity of a
     subway wagon 'V'."""
-    F = sum(traffic[i] for i in range(len(traffic)))  # Total number of travellers over a year.
+    F = sum(traffic)  # Total number of travellers over a year.
     dist_matrix = distance_matrix(graph)
     m = len(dist_matrix)
     S = []
@@ -72,7 +72,7 @@ def average_travelling_time(graph, traffic, V):
         for j in range(m):
             if dist_matrix[i][j] != -1:
                 S.append((dist_matrix[i][j] / V) * traffic[i] * traffic[j] / F ** 2)
-    return sum(L)*60
+    return sum(S)*60
 
 def building_cost(graph, alpha):
     """Computes the building cost of a graph by summing the lengths of every tunnels and multiplying it by
@@ -80,7 +80,7 @@ def building_cost(graph, alpha):
     m = len(graph)
     distance_total = 0
     for station in graph:
-        for [neighbour, dist] in G[station]:
+        for [_, dist] in graph[station]:
             distance_total += dist
     distance_total = distance_total / 2     # We counted twice each tunnel.
     return distance_total * alpha
