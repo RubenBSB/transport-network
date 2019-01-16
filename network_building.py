@@ -79,7 +79,7 @@ def matrix_to_dic(adj_matrix):
         adj_dic[i] = [[j,adj_matrix[i][j]] for j in range(m) if adj_matrix[i][j] != -1]
     return(adj_dic)
 
-def display_graph(adj_dic, plot_title='', figsize=(10,10)):
+def display_graph(adj_dic, plot_title='', figsize=(10,10), special_edges = []):
     """Plot a graph described by its adjacency dictionary 'adj_dic'."""
     global x,y
     plt.figure(figsize=figsize)
@@ -89,8 +89,12 @@ def display_graph(adj_dic, plot_title='', figsize=(10,10)):
     plt.scatter(x,y,marker='.',c='g')
     for station_id in adj_dic:
         for connected_station in adj_dic[station_id]:
-            j = connected_station[0]
-            plt.plot([x[station_id],x[j]],[y[station_id],y[j]],'g-',linewidth=0.5)
+            if [station_id, connected_station[0], connected_station[1]] in special_edges:
+                j = connected_station[0]
+                plt.plot([x[station_id],x[j]],[y[station_id],y[j]],'r-',linewidth=0.5)
+            else:
+                j = connected_station[0]
+                plt.plot([x[station_id], x[j]], [y[station_id], y[j]], 'g-', linewidth=0.5)
     plt.title(plot_title)
     plt.show()
 
