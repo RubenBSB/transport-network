@@ -1,56 +1,20 @@
 from heapq import *
 import numpy as np
 
-
-def dist_inf(dist1, dist2):
-    """Returns True if 'dist1' is less than 'dist2' knowing that -1.0 denotes infinity."""
-    if dist1 == -1.0 and dist2 != -1.0:
-        return False
-    elif dist1 != -1.0 and dist2 == -1.0:
-        return True
-    elif dist1 == -1.0 and dist2 == -1.0:
-        return False
-    else:
-        return (dist1 < dist2)
-
-
-def dist_sum(dist1, dist2):
-    """Returns the sum of 'dist1' and 'dist2' knowing that -1.0 denotes infinity."""
-    if dist1 == -1.0 or dist2 == -1.0:
-        return -1.
-    else:
-        return dist1 + dist2
-
-
-def dist_min(dist1, dist2):
-    """Returns the minimal value between 'dist1' and 'dist2' knowing that -1.0 denotes infinity."""
-    if dist1 == -1:
-        return dist2
-    elif dist2 == -1:
-        return dist1
-    else:
-        return min(dist1, dist2)
-
-
-def get_distances(source, graph):
-    """Dijkstra's algorithm to compute the length of the shortest path between station 'source'
+def get_distances(start, graph):
+    """Dijkstra's algorithm to compute the length of the shortest path between station 'start'
     and any other station of 'graph'."""
     m = len(graph)
-    distances_to_source = np.array(m * [-1.0])
-    distances_to_source[source] = 0
-    queue = [[source,0]]
-    already_seen = np.zeros(m, bool)
-    while queue != []:
-        [station_i,dist_source_i] = heappop(queue)
-        if not already_seen[station_i]:
-            already_seen[station_i] = True
-            for [station_j,dist_ij] in graph[station_i]:
-                c = dist_sum(dist_source_i, dist_ij)
-                if dist_inf(c, distances_to_source[station_j]):
-                    distances_to_source[station_j] = c
-                    heappush(queue, [station_j,c])
-    return distances_to_source
-
+    dist = [None] * m
+    queue = [(0, start)]
+    while queue:
+        path_len, v = heappop(queue)
+        if dist[v] is None: # v is unvisited
+            dist[v] = path_len
+            for w, edge_len in graph[v]:
+                if dist[w] is None:
+                    heappush(queue, (path_len + edge_len, w))
+    return [0 if x is None else x for x in dist]
 
 def distance_matrix(graph):
     """Returns the distance matrix of the graph which stores every distance between two stations."""
