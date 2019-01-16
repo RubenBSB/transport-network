@@ -13,7 +13,7 @@ Given the geographical localisations of several subway stations, we would like t
 
 Here, "good" means that the average travel time and the building cost of the network should be reasonably lows.
 
-In order to understand each of the following notations, please look at the formal definition of the problem from the [report document]("https://rubenbsb.github.io/pdfs/transport-network.pdf"). 
+In order to understand each of the following notations, please look at the formal definition of the problem from the [report document](https://rubenbsb.github.io/pdfs/transport-network.pdf). 
 
 However, here is an overview to help you get a quick mathematical understanding of the problem :
 
