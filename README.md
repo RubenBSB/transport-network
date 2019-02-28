@@ -1,8 +1,8 @@
 # transport-network 
 ## Motivations
-In order to get familiar with Github, I share this school project which has started in 2017.	
+This is a school project carried out in 2017.	
 
-The goal is to understand how does public transport networks are thought to be efficients in terms of travel time and building cost.
+The goal is to understand how does public transportation networks are thought to be efficients in terms of travel time and building cost.
 
 
 ## Problem modelisation
